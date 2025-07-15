@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPG Adventure</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <header>
+            <h1>🗡️ RPG Adventure 🗡️</h1>
+        </header>
+
+        <div class="game-content">
+            <!-- Character Creation Screen -->
+            <div id="character-creation" class="screen active">
+                <h2>Create Your Character</h2>
+                <div class="input-group">
+                    <label for="character-name">Enter your character's name:</label>
+                    <input type="text" id="character-name" placeholder="Hero" maxlength="20">
+                </div>
+                <button id="start-game" class="btn btn-primary">Start Adventure</button>
+            </div>
+
+            <!-- Game Screen -->
+            <div id="game-screen" class="screen">
+                <div class="stats-panel">
+                    <div class="character-stats">
+                        <h3 id="character-title">Hero (Level 1)</h3>
+                        <div class="stat-row">
+                            <span class="stat-label">Health:</span>
+                            <span id="health-display">100/100</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Attack:</span>
+                            <span id="attack-display">15</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Defense:</span>
+                            <span id="defense-display">5</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Experience:</span>
+                            <span id="exp-display">0/100</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="main-panel">
+                    <div class="game-log" id="game-log">
+                        <p>Welcome to your adventure! What would you like to do?</p>
+                    </div>
+
+                    <div class="action-panel">
+                        <div id="main-actions" class="action-group">
+                            <button id="fight-btn" class="btn btn-danger">Fight a Monster</button>
+                            <button id="rest-btn" class="btn btn-success">Rest and Heal</button>
+                            <button id="stats-btn" class="btn btn-info">View Stats</button>
+                        </div>
+
+                        <div id="combat-actions" class="action-group hidden">
+                            <button id="attack-btn" class="btn btn-danger">Attack</button>
+                            <button id="run-btn" class="btn btn-warning">Run Away</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="enemy-panel" id="enemy-panel" style="display: none;">
+                    <h3>Enemy</h3>
+                    <div id="enemy-stats">
+                        <div class="stat-row">
+                            <span class="stat-label">Name:</span>
+                            <span id="enemy-name">-</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Health:</span>
+                            <span id="enemy-health">-/-</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Attack:</span>
+                            <span id="enemy-attack">-</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Defense:</span>
+                            <span id="enemy-defense">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Game Over Screen -->
+            <div id="game-over" class="screen">
+                <h2>💀 Game Over 💀</h2>
+                <p id="final-stats">Your hero has fallen in battle!</p>
+                <button id="restart-btn" class="btn btn-primary">Play Again</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

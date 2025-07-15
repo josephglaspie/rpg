@@ -3,16 +3,43 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"log"
+	"net/http"
 	"os"
 	"strings"
 )
 
 func main() {
+	// Check if running in server mode
+	if len(os.Args) > 1 && os.Args[1] == "server" {
+		startWebServer()
+		return
+	}
+
+	// Check if running tests
+	if len(os.Args) > 1 && os.Args[1] == "test" {
+		testGame()
+		return
+	}
+
+	// Default: run console version
 	fmt.Println("🗡️  Welcome to the RPG Adventure! 🗡️")
 	fmt.Println("=====================================")
 	
 	player := createPlayer()
 	gameLoop(player)
+}
+
+func startWebServer() {
+	fmt.Println("🌐 Starting RPG Web Server...")
+	fmt.Println("🎮 Game available at: http://localhost:8081")
+	fmt.Println("Press Ctrl+C to stop the server")
+	
+	// Serve static files (HTML, CSS, JS)
+	http.Handle("/", http.FileServer(http.Dir("./")))
+	
+	// Start server on port 8080
+	log.Fatal(http.ListenAndServe(":8081", nil))
 }
 
 func createPlayer() *Character {

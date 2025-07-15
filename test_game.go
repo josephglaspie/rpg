@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"os"
 )
 
 func testGame() {
@@ -34,9 +33,3 @@ func testGame() {
 	fmt.Println("Game is ready to play! Run: go run *.go")
 }
 
-func init() {
-	if len(os.Args) > 1 && os.Args[1] == "test" {
-		testGame()
-		os.Exit(0)
-	}
-}

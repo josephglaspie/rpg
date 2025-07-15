@@ -1,0 +1,23 @@
+# Git
+.git
+.gitignore
+
+# Documentation
+README.md
+readme.md
+CLAUDE.md
+
+# Development files
+*.md
+.DS_Store
+
+# Built binaries
+rpg
+
+# IDE files
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.log

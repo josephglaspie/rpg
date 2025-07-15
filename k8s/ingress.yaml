@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rpg-game-ingress
+  namespace: rpg-game
+  labels:
+    app: rpg-game
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: rpg-game.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: rpg-game-service
+            port:
+              number: 80
+  # Uncomment and configure for TLS
+  # tls:
+  # - hosts:
+  #   - rpg-game.local
+  #   secretName: rpg-game-tls

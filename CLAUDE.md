@@ -31,8 +31,13 @@ The game is structured into three main components:
 # Build the game
 go build -o rpg
 
-# Run the game directly
+# Run console version
 go run *.go
+
+# Run web server version
+go run *.go server
+# or after building:
+./rpg server
 
 # Run system tests
 go run *.go test
