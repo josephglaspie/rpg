@@ -171,6 +171,115 @@ kubectl delete -f k8s/
 sudo sed -i '/rpg-game.local/d' /etc/hosts
 ```
 
+## ArgoCD Deployment
+
+Deploy and manage the RPG game using ArgoCD for GitOps-based continuous deployment.
+
+### Prerequisites
+- ArgoCD installed in your cluster
+- This repository accessible to ArgoCD (GitHub, GitLab, etc.)
+- kubectl configured for your cluster
+
+### Setup ArgoCD Application
+
+1. **Access ArgoCD UI:**
+   ```bash
+   # Get admin password
+   kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
+   
+   # Port forward ArgoCD server
+   kubectl port-forward svc/argocd-server -n argocd 8080:443
+   
+   # Open https://localhost:8080 and login with admin/<password>
+   ```
+
+2. **Create Application via UI:**
+   - Click "NEW APP"
+   - Fill in the following details:
+     - **Application Name:** `rpg-game`
+     - **Project:** `default`
+     - **Sync Policy:** `Automatic` (optional)
+     - **Repository URL:** `https://github.com/your-username/rpg` (replace with your repo)
+     - **Revision:** `HEAD` or specific branch
+     - **Path:** `k8s`
+     - **Destination Cluster:** `https://kubernetes.default.svc`
+     - **Namespace:** `rpg-game`
+   - Click "CREATE"
+
+3. **Create Application via CLI:**
+   ```bash
+   # Install ArgoCD CLI if not already installed
+   # See: https://argo-cd.readthedocs.io/en/stable/cli_installation/
+   
+   # Login to ArgoCD
+   argocd login localhost:8080
+   
+   # Create the application
+   argocd app create rpg-game \
+     --repo https://github.com/your-username/rpg \
+     --path k8s \
+     --dest-server https://kubernetes.default.svc \
+     --dest-namespace rpg-game \
+     --sync-policy automated \
+     --auto-prune \
+     --self-heal
+   ```
+
+4. **Create Application via YAML manifest:**
+   ```bash
+   # Apply the ArgoCD Application manifest
+   kubectl apply -f argocd/application.yaml
+   ```
+
+### Managing the Application
+
+**Sync the application:**
+```bash
+argocd app sync rpg-game
+```
+
+**Check application status:**
+```bash
+argocd app get rpg-game
+```
+
+**View application logs:**
+```bash
+argocd app logs rpg-game
+```
+
+**Delete the application:**
+```bash
+argocd app delete rpg-game
+```
+
+### Automatic Deployments
+
+With ArgoCD configured:
+1. Any changes to `k8s/` manifests in your repository will trigger automatic deployment
+2. ArgoCD will continuously monitor and sync your application state
+3. View deployment history and rollback capabilities through the ArgoCD UI
+4. Set up webhooks for faster sync times (optional)
+
+### Troubleshooting ArgoCD
+
+**Application stuck in sync:**
+```bash
+# Check application events
+argocd app get rpg-game
+kubectl get events -n rpg-game
+
+# Force refresh
+argocd app get rpg-game --refresh
+```
+
+**Reset admin password:**
+```bash
+# Delete the secret to reset password
+kubectl -n argocd delete secret argocd-initial-admin-secret
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
+```
+
 ### Troubleshooting
 
 - **Ingress not working?** Wait a few minutes for the ingress controller to start, or try `minikube addons disable ingress && minikube addons enable ingress`
