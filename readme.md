@@ -84,4 +84,97 @@ go run *.go test
 - **Console Mode**: Traditional text-based terminal gameplay
 - **Test Mode**: Automated testing of game systems
 
+## Kubernetes Deployment (Minikube)
+
+Deploy the RPG game to your local minikube cluster and access it through your browser.
+
+### Prerequisites
+- [Minikube](https://minikube.sigs.k8s.io/docs/start/) installed and running
+- [kubectl](https://kubernetes.io/docs/tasks/tools/) configured to work with minikube
+- Docker (for building the image locally)
+
+### Quick Start
+
+1. **Start minikube with ingress addon:**
+   ```bash
+   minikube start
+   minikube addons enable ingress
+   ```
+
+2. **Build and load the Docker image into minikube:**
+   ```bash
+   # Build the Docker image
+   docker build -t josephglaspie/rpg-game:latest .
+   
+   # Push the image to Dockerhub
+    docker push josephglaspie/rpg-game:latest
+   ```
+
+3. **Deploy to Kubernetes:**
+   ```bash
+   # Apply all Kubernetes manifests
+   kubectl apply -f k8s/
+   ```
+
+4. **Set up local DNS (add to /etc/hosts):**
+   ```bash
+   # Get minikube IP
+   minikube ip
+   
+   # Add this line to your /etc/hosts file (replace <MINIKUBE_IP> with actual IP):
+   # <MINIKUBE_IP> rpg-game.local
+   echo "$(minikube ip) rpg-game.local" | sudo tee -a /etc/hosts
+   ```
+
+5. **Access the game:**
+   - Open your browser and go to: **http://rpg-game.local**
+   - The game should load and be ready to play!
+
+### Alternative Access Methods
+
+**Option 1: Port Forwarding (no DNS setup needed):**
+```bash
+kubectl port-forward -n rpg-game service/rpg-game-service 8081:80
+# Then visit: http://localhost:8081
+```
+
+**Option 2: Minikube Service (opens automatically):**
+```bash
+minikube service rpg-game-service -n rpg-game
+```
+
+### Deployment Management
+
+**Check deployment status:**
+```bash
+kubectl get pods -n rpg-game
+kubectl get services -n rpg-game
+kubectl get ingress -n rpg-game
+```
+
+**View logs:**
+```bash
+kubectl logs -n rpg-game -l app=rpg-game -f
+```
+
+**Scale the deployment:**
+```bash
+kubectl scale deployment rpg-game -n rpg-game --replicas=3
+```
+
+**Clean up:**
+```bash
+# Remove all resources
+kubectl delete -f k8s/
+
+# Remove from /etc/hosts
+sudo sed -i '/rpg-game.local/d' /etc/hosts
+```
+
+### Troubleshooting
+
+- **Ingress not working?** Wait a few minutes for the ingress controller to start, or try `minikube addons disable ingress && minikube addons enable ingress`
+- **Image not found?** Make sure you ran `minikube image load josephglaspie/rpg-game:latest`
+- **Can't access the game?** Check that minikube is running with `minikube status`
+
 Enjoy your adventure! 🗡️
